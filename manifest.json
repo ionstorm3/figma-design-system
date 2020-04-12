@@ -1,0 +1,7 @@
+{
+  "name": "Style Guide Generator",
+  "id": "830563043746866243",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
