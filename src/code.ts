@@ -6,7 +6,7 @@
 // full browser environment (see documentation).
 
 // This shows the HTML page in "ui.html".
-import {TextStylesGenerator} from "./generators/TextStylesGenerator";
+import {TextStylesGenerator} from "./Generators/TextStylesGenerator/TextStylesGenerator";
 
 figma.showUI(__html__);
 
@@ -46,13 +46,13 @@ figma.ui.onmessage = async (msg: any): Promise<void> => {
         // console.log(solidPaintStyles);
         //
         // let textStyles: TextStyle[] = figma.getLocalTextStyles();
-        // // console.log("textStyles:");
-        // // console.log(textStyles);
+        // console.log("textStyles:");
+        // console.log(textStyles);
         // //
         // // let count: number = 0;
         //
         // let idx: number = textStyles.findIndex((x: TextStyle) => {
-        //     return x.name === "Text_B/Light"
+        //     return x.name === "Text_C/NoBoldItalic"
         // });
         // if (idx > -1) {
         //     console.log("Found text style:")

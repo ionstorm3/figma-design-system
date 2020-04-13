@@ -21,17 +21,19 @@ export class GeneratorBase {
     //#region Methods
 
     protected initialize(removeExisting: boolean = false): void {
-        let page: PageNode = figma.root.findOne((node: PageNode) => {
-            return node.type === "PAGE" && node.name === this.m_rootName
-        }) as PageNode;
+        console.log("GeneratorBase.initialize...");
 
-        if (page !== undefined && page !== null) {
-            this.m_rootPage = page;
+        let idx: number = figma.root.children.findIndex((child: PageNode) => {
+            return child.name === this.m_rootName
+        });
+
+        if (idx > -1) {
+            this.m_rootPage = figma.root.children[idx];
             return;
-        } else {
-            this.m_rootPage = figma.createPage();
-            this.m_rootPage.name = this.m_rootName;
         }
+
+        this.m_rootPage = figma.createPage();
+        this.m_rootPage.name = this.m_rootName;
 
         if (removeExisting) {
             this.clearPage();
@@ -45,5 +47,4 @@ export class GeneratorBase {
     }
 
     //#endregion
-
 }
