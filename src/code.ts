@@ -9,6 +9,7 @@
 import {TextStylesGenerator} from "./Generators/TextStylesGenerator/TextStylesGenerator";
 
 figma.showUI(__html__);
+figma.ui.resize(800, 400);
 
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
@@ -40,14 +41,20 @@ figma.ui.onmessage = async (msg: any): Promise<void> => {
         // console.log("results:");
         // console.log(results);
 
-        // let solidPaintStyles: PaintStyle[] = figma.getLocalPaintStyles().filter(paintStyle => paintStyle.paints[0].type === "SOLID");
-        // //
-        // console.log("solidPaintStyles:");
-        // console.log(solidPaintStyles);
+        let solidPaintStyles: PaintStyle[] = figma.getLocalPaintStyles().filter(paintStyle => paintStyle.paints[0].type === "SOLID");
         //
-        // let textStyles: TextStyle[] = figma.getLocalTextStyles();
-        // console.log("textStyles:");
-        // console.log(textStyles);
+        console.log("solidPaintStyles:");
+        console.log(solidPaintStyles);
+
+        // console.log("Paint styles:");
+        // console.log(figma.getLocalPaintStyles());
+        //
+        // console.log("Effect styles:");
+        // console.log(figma.getLocalEffectStyles());
+
+        let textStyles: TextStyle[] = figma.getLocalTextStyles();
+        console.log("textStyles:");
+        console.log(textStyles);
         // //
         // // let count: number = 0;
         //

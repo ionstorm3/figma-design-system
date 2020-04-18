@@ -1,4 +1,4 @@
-export interface IGenerator {
+export interface IGenerator<TNode, TStyle extends BaseStyle> {
 
     //#region Properties
 
@@ -10,7 +10,17 @@ export interface IGenerator {
 
     //#region Methods
 
-    executeAsync(): Promise<void>;
+    initializeAsync(): Promise<void>;
+
+    initializeNode(): void;
+
+    createNode(): void;
+
+    clearNode(): void;
+
+    findNode(): void;
+
+    createCss():string;
 
     //#endregion
 }

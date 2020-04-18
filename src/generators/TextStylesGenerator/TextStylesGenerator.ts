@@ -1,43 +1,22 @@
 import {GeneratorBase} from "../GeneratorBase";
 import {CssExtensionMethods} from "./ExtensionMethods/CssExtensionMethods";
 
-export class TextStylesGenerator extends GeneratorBase {
+export class TextStylesGenerator extends GeneratorBase<TextStyle> {
 
-    private m_frameNode: FrameNode = figma.createFrame();
-    private m_x: number = 20;
-    private m_y: number = 20;
-    private m_margin: number = 20;
-    private m_largestWidth: number = 0;
 
     //#region Properties
 
-    public get frame(): FrameNode {
-        return this.m_frameNode;
-    }
-
-    public frameName: string = "Text Styles";
+    protected name: string = "Text Styles";
 
     //#endregion
 
+    //#region Methods
+
     public async initializeAsync(): Promise<void> {
-        console.log("initializeAsync");
-        this.initializeFrame();
+        await super.initializeAsync();
         await this.loadStylesAsync();
-        this.scrollIntoView();
-    }
-
-    public initializeFrame(): void {
-        console.log("initializeFrame");
-
-        //Create the frame
-        this.createFrame();
-    }
-
-    public createFrame(): void {
-        console.log("createFrame...");
-        this.m_frameNode.name = this.frameName;
-        this.root.appendChild(this.m_frameNode);
-        console.log("frame created.");
+        this.createStyleNodes();
+        this.focus();
     }
 
     private async loadStylesAsync(): Promise<void> {
@@ -48,73 +27,61 @@ export class TextStylesGenerator extends GeneratorBase {
 
         console.log("fonts loaded.");
         console.log("Retrieving text styles...");
-        let textStyles: TextStyle[] = figma.getLocalTextStyles();
-        console.log("text styles retrieved.");
-
-        let x: number = 20;
-        let y: number = 20;
-        let largestWidth: number = 0;
-
-        textStyles.forEach((textStyle: TextStyle) => {
-            this.createSection(textStyle);
-            // let titleNode: TextNode = figma.createText();
-            // titleNode.name = `${textStyle.name}`;
-            // titleNode.characters = textStyle.name;
-            // titleNode.textStyleId = textStyle.id;
-            // titleNode.x = x;
-            // titleNode.y = y;
-            // y = y + titleNode.height + 24 /*padding*/;
-            //
-            // if (titleNode.width > largestWidth) {
-            //     largestWidth = titleNode.width;
-            // }
-            //
-            // this.frame.appendChild(titleNode);
-        });
-        // this.m_frameNode.resize(largestWidth + 40, y);
-        //
-        // console.log(`largest width: ${largestWidth}.`);
-
+        this.styles = figma.getLocalTextStyles();
+        console.log("styles:");
+        console.log(this.styles);
     }
 
-    private createSection(textStyle: TextStyle): void {
+    private createStyleNodes(): void {
+        this.styles.forEach((style: TextStyle, index: number) => {
+            this.createStyleNode(style);
+        });
+
+        this.node.resize(this.xMax + this.padding * 2, this.y);
+        console.log("node children:");
+        console.log(this.node);
+    }
+
+    private createStyleNode(textStyle: TextStyle): void {
+        //Create the frame
+        let frameNode: FrameNode = figma.createFrame();
+        frameNode.name = textStyle.name;
+        frameNode.y = this.y;
+        frameNode.x = this.padding;
+
+        //Create the title text
         let titleNode: TextNode = figma.createText();
-        titleNode.name = `${textStyle.name} Name`;
+        titleNode.name = `${textStyle.name} - Title`;
         titleNode.characters = textStyle.name;
         titleNode.textStyleId = textStyle.id;
-        titleNode.x = this.m_x;
-        titleNode.y = this.m_y;
-        this.m_y = this.m_y + titleNode.height;
+        titleNode.y = 0;
 
-        if (titleNode.width > this.m_largestWidth) {
-            this.m_largestWidth = titleNode.width;
-        }
-
+        //Create the css text
         let cssNode: TextNode = figma.createText();
-        cssNode.name = `${textStyle.name} CSS`;
-        cssNode.characters = `font-family: ${textStyle.fontName.family}; font-style:${CssExtensionMethods.calculateFontStyle(textStyle)}; font-weight:${CssExtensionMethods.calculateFontWeight(textStyle)}; text-decoration:${CssExtensionMethods.calculateTextDecoration(textStyle)}; font-size:${textStyle.fontSize}px;`;
+        cssNode.name = `${textStyle.name} - CSS`;
+        cssNode.characters = CssExtensionMethods.toCss(textStyle);
         cssNode.fontName = {family: "Roboto", style: "Light"};
         cssNode.fontSize = 12;
-        cssNode.x = this.m_x;
-        cssNode.y = this.m_y;
+        cssNode.y = titleNode.height;
+        cssNode.opacity = 0.50;
 
-        this.m_y = this.m_y + cssNode.height + 20;
+        let width: number = cssNode.width > titleNode.width ? cssNode.width : titleNode.width;
 
-        if (cssNode.width > this.m_largestWidth) {
-            this.m_largestWidth = cssNode.width;
+        if (width > this.xMax) {
+            this.xMax = width;
         }
 
-        this.m_frameNode.appendChild(titleNode);
-        this.m_frameNode.appendChild(cssNode);
-        this.m_frameNode.resize(this.m_largestWidth + 40, this.m_y);
-        console.log(`largest width: ${this.m_largestWidth}.`);
+        this.y = this.y + (titleNode.height + cssNode.height) + this.spacing;
 
+        frameNode.resize(width, titleNode.height + cssNode.height);
+
+        frameNode.appendChild(titleNode);
+        frameNode.appendChild(cssNode);
+        console.log("appending frame node:");
+        console.log(frameNode);
+        this.node.insertChild(0, frameNode);
     }
 
-    private scrollIntoView(): void {
-        figma.root.appendChild(this.root);
-        figma.currentPage = this.root;
-        figma.viewport.scrollAndZoomIntoView(this.root.children);
-        figma.closePlugin();
-    }
+    //#endregion
+
 }

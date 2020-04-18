@@ -1,17 +1,40 @@
 <!--<h2>Rectangle Creator</h2>-->
 <!--<p>Count: <input id="count" value="5"></p>-->
-<button id="create">Generate</button>
+<div id="app">
+    <span class="header">Which styles would you like to include?</span>
+    <div class="list">
+        <div class="list-item">
+            <span>Generate Text Styles</span>
+            <a>Download SASS</a>
+
+        </div>
+        <div class="list-item">
+            <span>Generate Color Styles</span>
+            <a>Download SASS</a>
+
+        </div>
+        <div class="list-item">
+            <span>Generate Shadow Styles</span>
+            <a>Download SASS</a>
+
+        </div>
+    </div>
+
+    <div class="btns-wrapper">
+        <button id="create" class="accept">Generate All</button>
+    </div>
+</div>
 <!--<button id="cancel">Cancel</button>-->
 <script>
 
-document.getElementById('create').onclick = () => {
-  // const textbox = document.getElementById('count');
-  // const count = parseInt(textbox.value, 10);
-  parent.postMessage({ pluginMessage: { type: 'create-rectangles' } }, '*')
-}
+    document.getElementById('create').onclick = () => {
+        // const textbox = document.getElementById('count');
+        // const count = parseInt(textbox.value, 10);
+        parent.postMessage({pluginMessage: {type: 'create-rectangles'}}, '*')
+    }
 
-// document.getElementById('cancel').onclick = () => {
-//   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-// }
+    // document.getElementById('cancel').onclick = () => {
+    //   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+    // }
 
 </script>
